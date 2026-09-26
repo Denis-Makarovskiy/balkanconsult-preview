@@ -23,6 +23,7 @@ PUBLIC_TOP = ("index.html", "404.html", ".nojekyll")
 NOINDEX = '<meta name="robots" content="noindex, nofollow">'
 ATTR = re.compile(r'(?:href|src|action)="([^"]+)"')
 MARKERS = {"ru": "Это ИИ-проект", "me": "Ovo je AI projekat", "en": "This is an AI project"}
+DOSSIER_ANSWER_HEADINGS = {"ru": "Какой ответ?", "me": "Koji je odgovor?", "en": "What is the answer?"}
 
 
 def public_files(site: Path) -> list[Path]:
@@ -78,6 +79,8 @@ def audit(site: Path, repo: str, stage: Path | None) -> tuple[list[str], dict[st
                 for n in range(1, 6):
                     if f'id="p{n}"' not in source:
                         errors.append(f"{relative}: dossier part {n} missing")
+                if DOSSIER_ANSWER_HEADINGS[lang] not in rendered:
+                    errors.append(f"{relative}: reader-first answer heading missing")
             if len(parts) > 2 and parts[1] == "law" and parts[2] not in rendered:
                 errors.append(f"{relative}: law identifier missing")
             if len(parts) > 2 and parts[1] == "law" and lang in ("me", "en"):
@@ -113,7 +116,7 @@ def audit(site: Path, repo: str, stage: Path | None) -> tuple[list[str], dict[st
             errors.append(f"{key}: expected {value}, got {counts[key]}")
     if stage:
         manifest = json.loads((stage / "manifest.json").read_text(encoding="utf-8"))
-        if manifest.get("stage") != "v74-rc5" or manifest.get("pages") != 147:
+        if manifest.get("stage") != "v74-rc8" or manifest.get("pages") != 147:
             errors.append("source stage identity or page count differs")
         content = stage / "content"
         for row in manifest["pages_manifest"]:
@@ -126,7 +129,9 @@ def audit(site: Path, repo: str, stage: Path | None) -> tuple[list[str], dict[st
             data = json.loads((content / "dossiers" / data_name).read_text(encoding="utf-8"))
             raw = html.unescape(file.read_text(encoding="utf-8"))
             text = plain(raw)
-            fields = [data["title"], data["summary"], data["parts"]["norms"]["note"]]
+            fields = [data["title"], data["question"], data["summary"], data["parts"]["norms"]["note"]]
+            if data.get("answer_lead"):
+                fields.append(data["answer_lead"])
             fields += data["parts"].get("gaps", [])
             fields += [r["value"] for r in data["parts"]["conditions"]["rows"]]
             for value in fields:
@@ -170,7 +175,7 @@ def main() -> int:
             errors.append("--seal requires --stage source comparison")
         if not errors:
             seal_path.parent.mkdir(parents=True, exist_ok=True)
-            seal_path.write_text(json.dumps({"stage": "v74-rc5", "date": str(date.today()),
+            seal_path.write_text(json.dumps({"stage": "v74-rc8", "date": str(date.today()),
                 "scope": "all public files, every route, 147 dossier source parities, 18 info source parities",
                 "claim_limit": "AI rendering and consistency audit; not a lawyer review or guarantee of legal correctness",
                 "counts": counts, "sha256": files}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
