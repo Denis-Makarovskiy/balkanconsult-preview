@@ -86,6 +86,15 @@ def audit(site: Path, repo: str, stage: Path | None) -> tuple[list[str], dict[st
                     for label in ("Редакции", "Связи", "Используется в досье")
                 ):
                     errors.append(f"{relative}: Russian navigation in translated law page")
+            if len(parts) == 3 and parts[1] == "laws":
+                if 'data-preview-laws-note="true"' not in source or '<form class="gbox"' in source:
+                    errors.append(f"{relative}: static register search is misleading or still active")
+                if lang in ("me", "en") and "Реестр актов Черногории" in source:
+                    errors.append(f"{relative}: Russian metadata on translated law catalog")
+            if len(parts) > 1 and parts[1] in ("law", "laws") and re.search(
+                r"(?:редакция №|redakcija br\.|edition no\.)\s*-\d+", rendered
+            ):
+                errors.append(f"{relative}: invalid negative edition number")
         for url in ATTR.findall(source):
             if not url.startswith(f"/{repo}/"):
                 if url.startswith(("/ru/", "/me/", "/en/", "/static/")):
@@ -104,7 +113,7 @@ def audit(site: Path, repo: str, stage: Path | None) -> tuple[list[str], dict[st
             errors.append(f"{key}: expected {value}, got {counts[key]}")
     if stage:
         manifest = json.loads((stage / "manifest.json").read_text(encoding="utf-8"))
-        if manifest.get("stage") != "v74-rc4" or manifest.get("pages") != 147:
+        if manifest.get("stage") != "v74-rc5" or manifest.get("pages") != 147:
             errors.append("source stage identity or page count differs")
         content = stage / "content"
         for row in manifest["pages_manifest"]:
@@ -161,7 +170,7 @@ def main() -> int:
             errors.append("--seal requires --stage source comparison")
         if not errors:
             seal_path.parent.mkdir(parents=True, exist_ok=True)
-            seal_path.write_text(json.dumps({"stage": "v74-rc4", "date": str(date.today()),
+            seal_path.write_text(json.dumps({"stage": "v74-rc5", "date": str(date.today()),
                 "scope": "all public files, every route, 147 dossier source parities, 18 info source parities",
                 "claim_limit": "AI rendering and consistency audit; not a lawyer review or guarantee of legal correctness",
                 "counts": counts, "sha256": files}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
