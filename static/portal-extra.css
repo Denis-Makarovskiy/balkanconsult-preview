@@ -1,0 +1,97 @@
+/* Дополнения бэкенда к дизайн-системе v7.
+   Здесь только то, чего нет в макетах: выбор языка, состояния разделов,
+   служебные пометки, формы обращений и заказов. Цвета и метрики — из v7. */
+
+/* ------------------------------------------------------------ выбор языка */
+.langbox{position:relative}
+.langbox > summary{list-style:none;cursor:pointer;border:1px solid var(--line);color:var(--ink2);padding:8px 14px;font:13px var(--sans);letter-spacing:.1em;background:transparent}
+.langbox > summary::-webkit-details-marker{display:none}
+.langbox[open] > summary{border-color:var(--red);color:var(--red)}
+.langlist{position:absolute;right:0;top:calc(100% + 6px);z-index:20;background:#fff;border:1px solid var(--line);box-shadow:0 12px 30px rgba(20,18,12,.14);min-width:210px;padding:6px 0;max-height:60vh;overflow:auto}
+.langlist a{display:flex;justify-content:space-between;gap:14px;padding:8px 16px;font-size:14px;color:var(--ink2)}
+.langlist a:hover{background:var(--lime)}
+.langlist a.on{color:var(--red);font-weight:500}
+.langlist a span.pending{color:var(--muted);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase}
+.mobilemenu{display:none}
+.catalog-section{margin:34px 0 10px;font:400 29px/1.2 var(--display);border-bottom:1px solid var(--line);padding-bottom:10px}
+.catalog-section a:hover{color:var(--red)}
+
+/* ------------------------------------------------------ служебные пометки */
+.notice{margin:0 0 26px;border:1px solid var(--line);border-left:3px solid var(--gold);background:var(--paper);padding:14px 18px;font-size:14.5px;color:var(--ink2)}
+.notice.red{border-left-color:var(--red);background:var(--red-soft)}
+.notice b{color:var(--ink)}
+.notice a{border-bottom:1px solid var(--line)}
+.hero-notice{max-width:760px;margin:26px auto 0;text-align:left;line-height:1.5}
+.devbar{background:#FBF6EA;border-bottom:1px solid var(--line);color:#6D6A63;font:12.5px/1.5 var(--sans);padding:8px 16px;text-align:center}
+
+/* ------------------------------------------------------------- разделы */
+.tile.closed{opacity:.72;cursor:default}
+.tile.closed:hover{background:transparent}
+.tile .openmark{margin-top:auto;padding-top:18px;font:11.5px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--red)}
+.tile .closedmark{margin-top:auto;padding-top:18px;font:11.5px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.tile .closedmark::before{content:"";display:inline-block;width:18px;border-top:1px dashed var(--muted);vertical-align:middle;margin-right:8px}
+
+/* ------------------------------------------------------ карточка закона */
+.lawhead{border:1px solid var(--line);background:#fff;padding:24px 26px;border-top:3px solid var(--red)}
+.lawhead h2{font:600 30px/1.2 var(--serif)}
+.lawhead .req{margin-top:10px;font-size:14.5px;color:var(--muted)}
+.lawhead .flags{margin-top:14px;display:flex;flex-wrap:wrap;gap:8px}
+.timeline{list-style:none;margin:18px 0 0;padding:0;border-left:2px solid var(--line)}
+.timeline li{position:relative;padding:8px 0 8px 18px;font-size:14.5px}
+.timeline li::before{content:"";position:absolute;left:-7px;top:15px;width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid var(--red)}
+.timeline li span{display:block;font-size:12.5px;color:var(--muted)}
+.linklist{list-style:none;margin:14px 0 0;padding:0}
+.linklist li{padding:9px 0;border-bottom:1px solid var(--line);font-size:15px;display:flex;justify-content:space-between;gap:16px}
+.linklist li i{font-style:normal;color:var(--muted);font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+
+/* ------------------------------------------------------------------ формы */
+.form{margin-top:22px;max-width:620px}
+.form label{display:block;font-size:13px;color:var(--muted);margin-top:16px}
+.form input[type=text],.form input[type=email],.form textarea{width:100%;margin-top:6px;border:1px solid var(--line);background:#fff;font:16px/1.5 var(--sans);padding:12px 14px;outline:0;color:var(--ink)}
+.form textarea{min-height:140px;resize:vertical}
+.form input:focus,.form textarea:focus{border-color:var(--red)}
+.form .btn{margin-top:18px}
+.form .fine{margin-top:12px;font-size:12.5px;color:var(--muted)}
+.free-request-page{padding-top:48px;padding-bottom:88px}
+.free-request-content{max-width:720px;margin:0 auto;font-size:16px;line-height:1.65}
+.free-request-content > p{margin:0 0 22px}
+.free-request-content .form{max-width:none;margin-bottom:30px}
+.free-request-content .form label{font-size:15px;color:var(--ink)}
+.free-request-content .form .fine{font-size:13px;line-height:1.5}
+.free-request-limits{margin-top:28px}
+.free-request-limits p{margin:8px 0 0}
+.free-request-promo .sh .btn{margin-top:26px}
+.free-request-search{margin:16px 0 0}
+.statusbox{margin:22px 0 0;border:1px solid var(--line);background:#fff;border-top:3px solid var(--red);padding:22px 24px}
+.statusbox b{color:var(--red)}
+.statusbox ul{margin:12px 0 0;padding-left:20px;font-size:14.5px;color:var(--ink2)}
+
+@media (max-width:900px){
+  .mobilemenu{display:block;position:relative;margin-left:auto}
+  .mobilemenu > summary{display:flex;align-items:center;justify-content:center;list-style:none;cursor:pointer;border:1px solid var(--line);color:var(--ink2);background:#fff;width:40px;height:36px;font:20px/1 var(--sans)}
+  .mobilemenu > summary::-webkit-details-marker{display:none}
+  .mobilemenu > summary::marker{content:""}
+  .mobilelinks{position:absolute;right:0;top:calc(100% + 6px);z-index:30;width:220px;display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);box-shadow:0 12px 30px rgba(20,18,12,.14);padding:6px 0}
+  .mobilelinks a{padding:10px 16px;font:14px var(--sans);color:var(--ink2)}
+  .mobilelinks a:hover{background:var(--lime)}
+  .langbox{margin-left:0}
+  .langlist{right:-10px}
+  .timeline li{padding-left:14px}
+}
+
+/* ------------------------------------------------------------------- печать */
+@media print{
+  .devbar,.notice,.langbox,header.site,footer.site,.toc .tools,.qtools,.modal,.skip{display:none!important}
+  body{background:#fff;color:#000;font-size:12pt}
+  .title{background:#fff;border-bottom:1px solid #ccc}
+  .title .ridge{display:none}
+  .page{display:block;padding:0}
+  .main{max-width:none}
+  .part{page-break-inside:avoid;border-top:1px solid #ddd}
+  .ph h2{font-size:16pt}
+  .part > p,.part li,.hit p.snip{font-size:11.5pt}
+  a{text-decoration:none;color:#000}
+  .toc{display:none}
+  .srcs .src,.claims .claim,.dates div{break-inside:avoid}
+  @page{margin:18mm 16mm}
+}
