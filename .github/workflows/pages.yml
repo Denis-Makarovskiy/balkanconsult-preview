@@ -1,0 +1,45 @@
+name: Verify every page and deploy preview
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages-preview
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify all public pages and approved file hashes
+        run: python3 qa/guard.py --site .
+      - uses: actions/configure-pages@v5
+      - name: Prepare verified public files only
+        run: |
+          mkdir _site
+          cp -R ru me en static _site/
+          cp index.html 404.html .nojekyll _site/
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+          include-hidden-files: true
+
+  deploy:
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy only after the full-page guard passes
+        id: deployment
+        uses: actions/deploy-pages@v4
